@@ -1,6 +1,6 @@
 # Car App — Specs
 
-Resumo técnico rápido do projeto "Car App".
+Resumo técnico atualizado do projeto "Car App".
 
 ## Visão geral
 - Aplicação Laravel (requisição: PHP ^8.2, Laravel ^12) com páginas implementadas como componentes Livewire/Volt.
@@ -20,20 +20,24 @@ Resumo técnico rápido do projeto "Car App".
 
 Ver: `routes/web.php`.
 
-## Modelos (existentes)
-- `User` — campos: `name`, `email`, `password`, casts e factories.
-- `Car` — `user_id`, `brand`, `model`, `year`, `plate`, `mileage`.
-- `Maintenance` — `car_id`, `description`, `cost`.
+## Modelos
+- `User`: Autenticação, campos: `name`, `email`, `password`.
+- `Car`: Veículo, campos: `user_id`, `brand`, `model`, `year`, `plate`, `mileage`.
+- `Maintenance`: Manutenção, campos: `car_id`, `description`, `cost`.
+- `Fuelling`: Abastecimento, campos: `car_id`, `user_id`, `liters`, `cost`, `station`, `date`.
 
-Observação: o modelo `Fuelling` foi adicionado em `app/Models/Fuelling.php` e a migration em `database/migrations/2026_02_25_000000_create_fuellings_table.php`.
+O modelo `Fuelling` foi adicionado em `app/Models/Fuelling.php` e a migration em `database/migrations/2026_02_25_000000_create_fuellings_table.php`.
 
 ## Views / UI
-- Páginas em `resources/views/pages/*` (ex.: `resources/views/pages/maintenance/⚡index.blade.php`, `resources/views/pages/fuelling/index.blade.php`).
+- Páginas em `resources/views/pages/*`:
+	- `dashboard/⚡index.blade.php`: Dashboard com widgets de estatísticas.
+	- `maintenance/⚡index.blade.php`: CRUD de manutenções.
+	- `fuelling/index.blade.php`: CRUD de abastecimentos (com modal Flux, atualização de quilometragem).
 - Componentes reutilizáveis em `resources/views/components` (ex.: `info-widget`, `title`, `navbar`).
 - As páginas usam Livewire page components definidos inline (ex.: `new class extends Component` dentro dos arquivos Blade).
 
 ## Banco de dados / Migrations
-- Existem migrations para `cars` e `maintenances` em `database/migrations/` (ex.: `2026_01_21_042623_cars.php`, `2026_02_14_235829_create_maintenances_table.php`).
+- Migrations para `cars`, `maintenances`, `fuellings` em `database/migrations/`.
 - Seeders: `database/seeders/UserSeeder.php`, `DatabaseSeeder.php`.
 
 ## Como rodar localmente
@@ -77,15 +81,18 @@ php artisan test
 ```
 
 ## Pontos importantes / Observações técnicas
-- Páginas de funcionalidade (manutenção, abastecimento) são implementadas como Livewire page components; algumas páginas contém lógica PHP embutida no Blade (classe anônima `new class extends Component`).
-- A funcionalidade de `Fuelling` atualmente só tem interface HTML — sem modelo nem lógica persistente.
-- Dashboard já contém estatísticas (ex.: `total_fuel_spent`) exibidas via componentes `info-widget`.
+- CRUD completo de manutenções e abastecimentos, ambos com modais Flux.
+- Ao criar/editar abastecimento, a quilometragem do veículo é atualizada automaticamente.
+- Dashboard exibe estatísticas dinâmicas:
+	- Gasto total, abastecimento total, manutenção total (últimos 30 dias).
+	- Valor de abastecimento é calculado dinamicamente da tabela `fuellings`.
+- Páginas implementadas como Livewire page components inline.
 
 ## Recomendações / Próximos passos
-- Criar modelo `Fuelling` + migration (`liters`, `cost`, `station`, `car_id`, `user_id`, `date`) e relacionamentos Eloquent.
-- Implementar Livewire page/component para CRUD de abastecimentos (seguindo o padrão de `Maintenance`).
-- Adicionar validações, testes unitários/feature para `Maintenance` e `Fuelling`.
+- Adicionar validações dos campos nos modais de manutenção e abastecimento.
+- Implementar testes unitários/feature para `Maintenance` e `Fuelling`.
 - Opcional: padronizar a forma de declaração dos componentes (mover lógica para classes Livewire separadas em `app/Http/Livewire/Pages`).
+- Melhorar UX dos modais (mensagens, loading, erros).
 
 ---
 
@@ -99,17 +106,9 @@ Arquivos úteis:
 Gerado automaticamente em: `SPECS.md`
 
 
-## 3. criando o crud de abastecimento
-- [x] criar um modal e inserir os campos seguindo o fillable da model, o modal deve ser um flux component (seguir exemplo da pagina de manutenções)
-
-Implementação realizada:
-- Adicionado modal Flux de criação/edição em `resources/views/pages/fuelling/index.blade.php` (`add-fuelling`) com os campos: `selected_car`, `liters`, `cost`, `station`, `date`.
-- Implementada lógica Livewire mínima inline no mesmo arquivo: carregamento de `userCars`, listagem de `fuellings`, métodos `createFuelling`, `editFuelling`, `updateFuelling`, `confirmDeleteFuelling`, `deleteFuelling` e `resetForm`.
-- Criado o model `Fuelling` (`app/Models/Fuelling.php`) e a migration `create_fuellings_table`.
-
- - [x] Todo abastecimento recebe um campo de quilometragem e ao criar/editar abastecimento, a quilometragem do veículo é atualizada automaticamente.
-
-Implementação:
-- Campo "Quilometragem" adicionado ao modal de abastecimento.
-- Ao criar ou editar abastecimento, o campo `mileage` do veículo é atualizado conforme o valor informado.
+## CRUD de abastecimento
+- Modal Flux de criação/edição/exclusão em `fuelling/index.blade.php` com campos: `selected_car`, `liters`, `cost`, `station`, `date`, `mileage`.
+- Lógica Livewire inline: métodos para criar, editar, atualizar, deletar abastecimento e atualizar quilometragem do veículo.
+- Botões de editar e excluir na tabela de abastecimentos, com modais dedicados.
+- Valor de abastecimento no dashboard é calculado dinamicamente da tabela `fuellings`.
 

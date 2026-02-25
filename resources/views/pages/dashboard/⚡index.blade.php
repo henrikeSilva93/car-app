@@ -39,9 +39,10 @@ new class extends Component
             ->sum('cost');
 
         $this->statistics['total_fuel_spent'] = \App\Models\Fuelling::where('car_id', $this->select_car)
-            ->where('date', '>=', now()->subDays(30))
-            ->sum('cost');
+           ->where('created_at', '>=', now()->subDays(30))
+           ->sum('cost');
 
+    
         $this->statistics['total_spent'] = $this->statistics['total_maintenance_spent'] + $this->statistics['total_fuel_spent'];
         // emitir inicial também
         $this->dispatch('stat-updated', stats: $this->statistics);
@@ -123,7 +124,7 @@ new class extends Component
         statKey="total_maintenance_spent"
     />
   </div>
-  <div>
-    
-  </div>
+
 </div>
+
+

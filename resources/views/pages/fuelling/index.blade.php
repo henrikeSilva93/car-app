@@ -55,10 +55,10 @@ new class extends Component
             $car->save();
         }
 
-        Flux::modal('add-fuelling')->show();
         $this->resetForm();
         $this->getFuellings();
         session()->flash('success', 'Abastecimento criado com sucesso.');
+        Flux::modal('add-fuelling')->close();
     }
 
     public function editFuelling($id)
@@ -146,6 +146,7 @@ new class extends Component
 ?>
 
 <div class="p-6 sm:p-8">
+    <x-alert-component/>
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <x-title title="Abastecimento" subtitle="Gerencie os abastecimentos do seu veículo"/>
         <flux:modal.trigger name="add-fuelling">
