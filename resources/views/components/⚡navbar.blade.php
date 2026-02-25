@@ -32,6 +32,12 @@ new class extends Component
                    class="text-gray-700 hover:text-blue-600 transition duration-200 {{ request()->is('maintenance*') ? 'text-blue-600 border-b-2 border-blue-600' : '' }}">
                     Manutenção
                 </a>
+                  </a>
+              
+                   <a href="/fuelling" 
+                   class="text-gray-700 hover:text-blue-600 transition duration-200 {{ request()->is('fuelling*') ? 'text-blue-600 border-b-2 border-blue-600' : '' }}">
+                    Abastecimentos
+                </a>
             </div>
 
 
