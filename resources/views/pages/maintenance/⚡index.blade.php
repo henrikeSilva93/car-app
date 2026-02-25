@@ -19,7 +19,7 @@ new class extends Component
 
     public function mount()
     {
-        $this->userCars = Car::where('user_id', 1)->get()->toArray();
+        $this->userCars = Car::where('user_id', auth()->id())->get()->toArray();
         $this->getMaitenances();
     }   
 

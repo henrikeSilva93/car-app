@@ -17,7 +17,7 @@ new class extends Component
 
     public function loadCars()
     {
-        return Car::where('user_id', 1)->get()->toArray();
+        return Car::where('user_id', auth()->id())->get()->toArray();
         
     }
 
@@ -32,7 +32,7 @@ new class extends Component
             'car.mileage' => 'required|integer|min:0',
         ]);
         Car::Create([
-            'user_id' => 1,
+            'user_id' => auth()->id(),
             'brand' => $this->car['brand'],
             'model' => $this->car['model'],
             'year' => $this->car['year'],

@@ -13,7 +13,7 @@ new class extends Component
 
     public function mount()
     {
-        $cars = Car::where('user_id',1)->get()->toArray();
+        $cars = Car::where('user_id', auth()->id())->get()->toArray();
         $this->cars = $cars;
        if( count($cars) > 0 ){
             $this->select_car = $cars[0]['id'];
