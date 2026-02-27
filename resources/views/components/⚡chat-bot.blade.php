@@ -1,17 +1,22 @@
 <?php
 
 use Livewire\Component;
-
 new class extends Component
 {
    
     public $showChat = false;
-    public $messages = [['from' => 'bot', 'text' => "Olá!,como posso ajudá-lo?"]];
+    public $messages = [];
     public $input = '';
     public $loading = false;
 
     public function mount() {
-       
+       $messagesFromDb = \App\Models\ChatbotMessageHistory::where('user_id', auth()->id())->get();
+       if($messagesFromDb->isEmpty()) {
+        $this->messages[] = ['from' => 'bot', 'text' => 'Bem-vindo, em que posso ajudar?'];
+       }
+       foreach($messagesFromDb as $msg) {
+            $this->messages[] = ['from' => $msg->sender, 'text' => $msg->message];
+       }
     }
 
     public function sendMessage() {
@@ -24,6 +29,12 @@ new class extends Component
         $this->input = '';
         $this->loading = true;
 
+        \App\Models\ChatbotMessageHistory::create([
+            'user_id' => auth()->id(),
+            'message' => $userMessage,
+            'sender' => 'user'
+        ]);
+        
         $botResponse = $prismService->generateResponse($userMessage);
         if($botResponse) {
             $this->messages[] = ['from' => 'bot', 'text' => $botResponse];
