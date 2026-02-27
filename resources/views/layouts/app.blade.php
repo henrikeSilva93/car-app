@@ -14,10 +14,14 @@
     <body>
         <!-- Navbar -->
         <livewire:navbar />
+     
 
         {{ $slot }}
 
         @livewireScripts
         @fluxScripts
+          @if(auth()->check())
+          <livewire:chat-bot/>
+        @endif
     </body>
 </html>
