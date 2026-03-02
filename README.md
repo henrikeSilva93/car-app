@@ -63,4 +63,4 @@ Contribuições são bem-vindas! Abra uma issue ou envie um pull request.
 MIT
 
 ## Contato
-Para dúvidas ou sugestões, envie um e-mail para [seu-email@dominio.com](mailto:seu-email@dominio.com).
+Para dúvidas ou sugestões, envie um e-mail para [aquilahenrique.silva@gmail.com](mailto:aquilahenrique.silva@gmail.com).
