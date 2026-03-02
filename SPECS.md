@@ -25,6 +25,7 @@ Ver: `routes/web.php`.
 - `Car`: Veículo, campos: `user_id`, `brand`, `model`, `year`, `plate`, `mileage`.
 - `Maintenance`: Manutenção, campos: `car_id`, `description`, `cost`.
 - `Fuelling`: Abastecimento, campos: `car_id`, `user_id`, `liters`, `cost`, `station`, `date`.
+- `ChatbotMessageHistory`: Histórico de mensagens do chatbot, campos: `user_id`, `message`, `sender`, `sent_at`.
 
 O modelo `Fuelling` foi adicionado em `app/Models/Fuelling.php` e a migration em `database/migrations/2026_02_25_000000_create_fuellings_table.php`.
 
@@ -87,12 +88,19 @@ php artisan test
 	- Gasto total, abastecimento total, manutenção total (últimos 30 dias).
 	- Valor de abastecimento é calculado dinamicamente da tabela `fuellings`.
 - Páginas implementadas como Livewire page components inline.
+- **ChatBot com IA**: Botão flutuante no canto inferior direito que permite interação por voz/texto com IA.
+	- Usa Ollama (`ministral-3b`) via pacote Prism para gerar respostas.
+	- Ferramentas disponíveis: `manutencao`, `criar_manutencao`, `ver_abastecimentos`, `abastecimento`.
+	- Histórico de mensagens persistido em `ChatbotMessageHistory`.
+	- Suporta formatação markdown nas respostas.
+	- Serviço em `app/Services/PrismService.php`, componente em `resources/views/components/⚡chat-bot.blade.php`.
 
 ## Recomendações / Próximos passos
 - Adicionar validações dos campos nos modais de manutenção e abastecimento.
 - Implementar testes unitários/feature para `Maintenance` e `Fuelling`.
 - Opcional: padronizar a forma de declaração dos componentes (mover lógica para classes Livewire separadas em `app/Http/Livewire/Pages`).
 - Melhorar UX dos modais (mensagens, loading, erros).
+- Melhorar o chatbot: adicionar suporte a seleção de veículo, feedback visual de ferramentas executadas.
 
 ---
 
@@ -100,6 +108,8 @@ Arquivos úteis:
 - `routes/web.php`
 - `app/Models/Car.php`
 - `app/Models/Maintenance.php`
+- `app/Services/PrismService.php`
+- `resources/views/components/⚡chat-bot.blade.php`
 - `resources/views/pages/maintenance/⚡index.blade.php`
 - `resources/views/pages/fuelling/index.blade.php`
 

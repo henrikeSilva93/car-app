@@ -17,6 +17,8 @@ new class extends Component
        foreach($messagesFromDb as $msg) {
             $this->messages[] = ['from' => $msg->sender, 'text' => $msg->message];
        }
+
+       //$this->dispatch('scrollDown');
     }
 
     public function sendMessage() {
@@ -28,17 +30,17 @@ new class extends Component
         $userMessage = $this->input;
         $this->input = '';
         $this->loading = true;
-
         \App\Models\ChatbotMessageHistory::create([
             'user_id' => auth()->id(),
             'message' => $userMessage,
             'sender' => 'user'
-        ]);
-        
-        $botResponse = $prismService->generateResponse($userMessage);
-        if($botResponse) {
-            $this->messages[] = ['from' => 'bot', 'text' => $botResponse];
-            $this->loading = false;
+            ]);
+            
+            $botResponse = $prismService->generateResponse($userMessage);
+            if($botResponse) {
+                $this->messages[] = ['from' => 'bot', 'text' => $botResponse];
+                $this->dispatch('scrollDown');
+                $this->loading = false;
 
         }
     }
@@ -67,7 +69,7 @@ new class extends Component
             <span>ChatBot</span>
             <button wire:click="$toggle('showChat')" class="text-white hover:text-gray-200 text-xl">&times;</button>
         </div>
-        <div class="px-4 py-3 flex-1 overflow-y-auto text-sm bg-gray-50" style="height:260px;">
+        <div id="chat-messages" class="px-4 py-3 flex-1 overflow-y-auto text-sm bg-gray-50" style="height:260px;">
             @foreach($messages as $msg)
                 <div class="mb-2 text-{{ $msg['from'] === 'user' ? 'right' : 'left' }}">
                     <span class="inline-block px-3 py-2 rounded-xl {{ $msg['from'] === 'user' ? 'bg-blue-600 text-white rounded-br-none' : 'bg-gray-200 text-gray-900 rounded-bl-none' }}">
@@ -85,6 +87,7 @@ new class extends Component
                 </div>
             </div>
         </div>
+
         <form wire:submit.prevent="sendMessage" class="flex border-t border-gray-200">
             <input wire:model.defer="input" type="text" placeholder="Digite sua mensagem..." class="flex-1 border-none px-4 py-3 text-sm focus:outline-none" autocomplete="off" />
             <button type="submit" class="bg-blue-600 text-white px-5 text-sm font-semibold">Enviar</button>
@@ -92,4 +95,22 @@ new class extends Component
     </div>
     @endif
 </div>
+
 </div>
+
+@script
+ <script>    
+     
+        Livewire.on('scrollDown', () => {
+            let box = document.getElementById('chat-messages');
+            console.log('scrolling down',);
+            box.scrollTo({
+                top: box.scrollHeight,
+                behavior: 'smooth'
+            });
+        });
+  
+
+      
+ </script>
+@endscript
