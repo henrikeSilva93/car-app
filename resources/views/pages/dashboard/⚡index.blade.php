@@ -3,50 +3,76 @@
 use Livewire\Component;
 use App\Models\Car;
 use App\Models\Maintenance;
+use App\Models\Fuelling;
 
 new class extends Component
 {
     public $cars = [];
     public $select_car = null;
     public $selectedCarDetails = null;
-    public $statistics = [];
+    public $statistics = [
+        'total_maintenance_spent' => 0,
+        'total_fuel_spent' => 0,
+        'total_spent' => 0,
+    ];
 
     public function mount()
     {
-        $cars = Car::where('user_id', auth()->id())->get()->toArray();
-        $this->cars = $cars;
-       if( count($cars) > 0 ){
-            $this->select_car = $cars[0]['id'];
-            $this->selectedCarDetails = Car::where('id', $this->select_car)->first();
-            $this->selectedCarDetails['mileage'] = \App\Models\Mileage::where('car_id', $this->select_car)->latest()->first()->mileage ?? 0;
-        }
+        $cars = Car::where('user_id', auth()->id())->get();
+        
+        $this->cars = $cars->toArray();
 
-        $this->getStatistics();
+        if ($cars->isNotEmpty()) {
+            $firstCar = $cars->first();
+            $this->select_car = $firstCar ? $firstCar->id : null;
+            $this->loadCarData();
+        }
     }
 
     public function selectCar()
     {
-        $this->selectedCarDetails = Car::where('id', $this->select_car)->first();
-        $this->getStatistics();
-        // emitir estatísticas para widgets Livewire
-        $this->dispatch('stat-updated', $this->statistics);
-     
+        $this->loadCarData();
     }
 
-    public function getStatistics()
+    private function loadCarData(): void
     {
+        if (!$this->select_car) {
+            $this->selectedCarDetails = null;
+            return;
+        }
+
+        $this->selectedCarDetails = Car::find($this->select_car);
+
+        if ($this->selectedCarDetails) {
+            $latestMileage = \App\Models\Mileage::where('car_id', $this->select_car)
+                ->latest()
+                ->first();
+
+            $this->selectedCarDetails->mileage = $latestMileage?->mileage ?? $this->selectedCarDetails->mileage;
+        }
+
+        $this->calculateStatistics();
+    }
+
+    private function calculateStatistics(): void
+    {
+        if (!$this->select_car) {
+            return;
+        }
+
+        $startDate = now()->subDays(30);
+
         $this->statistics['total_maintenance_spent'] = Maintenance::where('car_id', $this->select_car)
-            ->where('created_at', '>=', now()->subDays(30))
+            ->where('created_at', '>=', $startDate)
             ->sum('cost');
 
-        $this->statistics['total_fuel_spent'] = \App\Models\Fuelling::where('car_id', $this->select_car)
-           ->where('created_at', '>=', now()->subDays(30))
-           ->sum('cost');
+        $this->statistics['total_fuel_spent'] = Fuelling::where('car_id', $this->select_car)
+            ->where('created_at', '>=', $startDate)
+            ->sum('cost');
 
-    
         $this->statistics['total_spent'] = $this->statistics['total_maintenance_spent'] + $this->statistics['total_fuel_spent'];
-        // emitir inicial também
-        $this->dispatch('stat-updated', stats: $this->statistics);
+
+        $this->dispatch('stat-updated', $this->statistics);
     }
 };
 ?>
