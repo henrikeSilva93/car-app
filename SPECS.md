@@ -25,6 +25,7 @@ Ver: `routes/web.php`.
 - `Car`: Veículo, campos: `user_id`, `brand`, `model`, `year`, `plate`, `mileage`.
 - `Maintenance`: Manutenção, campos: `car_id`, `description`, `cost`.
 - `Fuelling`: Abastecimento, campos: `car_id`, `user_id`, `liters`, `cost`, `station`, `date`.
+- `Mileage`: Histórico de quilometragem, campos: `car_id`, `mileage`.
 - `ChatbotMessageHistory`: Histórico de mensagens do chatbot, campos: `user_id`, `message`, `sender`, `sent_at`.
 
 O modelo `Fuelling` foi adicionado em `app/Models/Fuelling.php` e a migration em `database/migrations/2026_02_25_000000_create_fuellings_table.php`.
@@ -38,7 +39,7 @@ O modelo `Fuelling` foi adicionado em `app/Models/Fuelling.php` e a migration em
 - As páginas usam Livewire page components definidos inline (ex.: `new class extends Component` dentro dos arquivos Blade).
 
 ## Banco de dados / Migrations
-- Migrations para `cars`, `maintenances`, `fuellings` em `database/migrations/`.
+- Migrations para `cars`, `maintenances`, `fuellings`, `mileages` em `database/migrations/`.
 - Seeders: `database/seeders/UserSeeder.php`, `DatabaseSeeder.php`.
 
 ## Como rodar localmente
@@ -84,6 +85,7 @@ php artisan test
 ## Pontos importantes / Observações técnicas
 - CRUD completo de manutenções e abastecimentos, ambos com modais Flux.
 - Ao criar/editar abastecimento, a quilometragem do veículo é atualizada automaticamente.
+- **Histórico de quilometragem**: Tabela `mileages` registra o histórico de quilometragem de cada veículo, permitindo rastreamento ao longo do tempo.
 - Dashboard exibe estatísticas dinâmicas:
 	- Gasto total, abastecimento total, manutenção total (últimos 30 dias).
 	- Valor de abastecimento é calculado dinamicamente da tabela `fuellings`.

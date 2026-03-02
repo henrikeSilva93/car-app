@@ -11,4 +11,4 @@
         'Segoe UI Symbol', 'Noto Color Emoji'; */
         --font-sans: Inter, sans-serif;
 }
-@custom-variant dark (&:where(.dark, .dark *));@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:where(.dark, .dark *));

@@ -7,6 +7,7 @@ Aplicação web para gestão de carros, abastecimentos, manutenções e históri
 ## Funcionalidades
 - Cadastro e gerenciamento de carros
 - Registro de abastecimentos e manutenções
+- Histórico de quilometragem dos veículos
 - Histórico de mensagens do chatbot
 - Interface interativa com Livewire
 

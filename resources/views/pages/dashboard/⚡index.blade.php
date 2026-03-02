@@ -18,6 +18,7 @@ new class extends Component
        if( count($cars) > 0 ){
             $this->select_car = $cars[0]['id'];
             $this->selectedCarDetails = Car::where('id', $this->select_car)->first();
+            $this->selectedCarDetails['mileage'] = \App\Models\Mileage::where('car_id', $this->select_car)->latest()->first()->mileage ?? 0;
         }
 
         $this->getStatistics();
@@ -50,8 +51,8 @@ new class extends Component
 };
 ?>
 
-<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
-    <div class="bg-white rounded-lg shadow-lg p-4">
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-6 transition-colors duration-300">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg dark:shadow-gray-900/50 p-4 transition-colors duration-300">
         <div class="flex gap-6 items-center">
             <!-- Select de Veículos -->
             <div class="flex-shrink-0">
@@ -59,7 +60,7 @@ new class extends Component
                     id="car-select"
                     wire:model="select_car" 
                     wire:change="selectCar" 
-                    class="px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200 bg-white shadow-sm hover:border-blue-400 text-sm">
+                    class="px-4 py-2 border-2 border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition duration-200 bg-white dark:bg-gray-700 dark:text-gray-200 shadow-sm hover:border-blue-400 text-sm">
                     <option value="">-- Selecione --</option>
                     @foreach($cars as $car)
                         <option value="{{ $car['id'] }}" {{ $select_car == $car['id'] ? 'selected' : '' }}>
@@ -72,19 +73,19 @@ new class extends Component
             <!-- Informações do Veículo Selecionado -->
             @if($selectedCarDetails)
                 <div class="flex-1 flex gap-4 items-center">
-                    <div class="border-l-4 border-blue-500 pl-4">
-                        <h2 class="text-lg font-bold text-gray-800">{{ $selectedCarDetails->brand }} {{ $selectedCarDetails->model }}</h2>
-                        <p class="text-xs text-gray-500">{{ $selectedCarDetails->year }} • {{ $selectedCarDetails->plate }}</p>
+                    <div class="border-l-4 border-blue-500 dark:border-blue-400 pl-4">
+                        <h2 class="text-lg font-bold text-gray-800 dark:text-gray-100">{{ $selectedCarDetails->brand }} {{ $selectedCarDetails->model }}</h2>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $selectedCarDetails->year }} • {{ $selectedCarDetails->plate }}</p>
                     </div>
                     <div class="flex gap-4 ml-auto">
                         <div class="text-center">
-                            <p class="text-xs font-semibold text-gray-500 uppercase">Quilometragem</p>
-                            <p class="text-lg font-bold text-green-600">{{ number_format($selectedCarDetails->mileage, 0, ',', '.') }} km</p>
+                            <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase">Quilometragem</p>
+                            <p class="text-lg font-bold text-green-600 dark:text-green-400">{{ number_format($selectedCarDetails->mileage, 0, ',', '.') }} km</p>
                         </div>
                     </div>
                 </div>
             @else
-                <div class="flex-1 text-gray-500 text-sm">
+                <div class="flex-1 text-gray-500 dark:text-gray-400 text-sm">
                     Selecione um veículo para ver as informações
                 </div>
             @endif

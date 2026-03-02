@@ -27,9 +27,9 @@ new class extends Component
 
 <div>
          <x-alert-component/>
-        <div class="min-h-screen flex items-center justify-center bg-gray-100">
-        <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-            <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Entrar</h2>
+        <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+        <div class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg dark:shadow-gray-900/50 w-full max-w-md">
+            <h2 class="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-gray-100">Entrar</h2>
             <form wire:submit.prevent="login">
                 <div class="space-y-4">
                     <flux:input label="E-mail" type="email" placeholder="seu@email.com" wire:model="email" required />
@@ -37,7 +37,7 @@ new class extends Component
                 </div>
                 <div class="mt-6 flex flex-col gap-2">
                     <flux:button type="submit" class="w-full" wire:click="login">Entrar</flux:button>
-                    <a href="/register" class="text-sm text-blue-600 hover:underline text-center">Criar conta</a>
+                    <a href="/register" class="text-sm text-blue-600 dark:text-blue-400 hover:underline text-center">Criar conta</a>
                 </div>
             </form>
         </div>

@@ -9,7 +9,7 @@ use App\Models\Fuelling;
 
 class PrismService
 {
-    public $model = 'ministral-3:3b';
+    public $model = 'minimax-m2.5:cloud';
     
     public function generateResponse($prompt)
     {   

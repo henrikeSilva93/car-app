@@ -119,7 +119,7 @@ new class extends Component
 
 ?>
 
-<div class="p-4">
+<div class="p-4 dark:bg-gray-900 min-h-screen transition-colors duration-300">
      <x-alert-component/>
         <div class="p-6 sm:p-8">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -131,29 +131,29 @@ new class extends Component
     </div>
     <div class="px-6 sm:px-8 pb-8">
         <div class="overflow-x-auto rounded-xl shadow-lg">
-            <table class="min-w-full bg-white">
-                <thead class="bg-white border-b border-gray-200">
+            <table class="min-w-full bg-white dark:bg-gray-800 transition-colors duration-300">
+                <thead class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                     <tr>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Carro</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Valor</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Descrição</th>
-                          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Data</th>
-                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Ações</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Carro</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Valor</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Descrição</th>
+                          <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Data</th>
+                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Ações</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
+                <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                     @forelse ($maintenances as $item)
-                    <tr class="hover:bg-gray-50 transition-colors duration-150 group">
-                        <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{$item['brand']}} {{$item['model']}}</td>
-                        <td class="px-6 py-4 text-sm text-gray-600"><span class="bg-green-300 p-2 rounded-full font-bold">R$ {{number_format($item['cost'], 2, ',', '.')}}<span></td>
-                        <td class="px-6 py-4 text-sm text-gray-600">{{$item['description']}}</td>
-                         <td class="px-6 py-4 text-sm text-gray-600">{{ \Carbon\Carbon::parse($item['created_at'])->format('d/m/Y') }}</td>
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 group">
+                        <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100 font-medium">{{$item['brand']}} {{$item['model']}}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400"><span class="bg-green-300 dark:bg-green-700 dark:text-green-100 p-2 rounded-full font-bold">R$ {{number_format($item['cost'], 2, ',', '.')}}<span></td>
+                        <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{{$item['description']}}</td>
+                         <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">{{ \Carbon\Carbon::parse($item['created_at'])->format('d/m/Y') }}</td>
                         <td class="px-6 py-4 text-center">
                             <div class="flex justify-right gap-1">
-                                <button title="Editar" class="text-gray-400 hover:text-blue-600 p-2 rounded-lg hover:bg-blue-50 transition" wire:click="editMaintenance({{ $item['id'] }})">
+                                <button title="Editar" class="text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/30 transition" wire:click="editMaintenance({{ $item['id'] }})">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"/></svg>
                                 </button>
-                                <button title="Deletar" class="text-gray-400 hover:text-red-600 p-2 rounded-lg hover:bg-red-50 transition" wire:click="confirmDeleteMaitenance({{$item['id']}})">
+                                <button title="Deletar" class="text-gray-400 hover:text-red-600 dark:hover:text-red-400 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition" wire:click="confirmDeleteMaitenance({{$item['id']}})">
                                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
                                 </button>
                             </div>
@@ -163,9 +163,9 @@ new class extends Component
                     <tr>
                         <td colspan="7" class="px-6 py-12 text-center">
                             <div class="flex flex-col items-center">
-                                <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 0a2 2 0 104 0m0 0a2 2 0 11-4 0"/></path></svg>
-                                <p class="text-gray-500 text-lg font-medium">Nenhuma Manutenção registrada</p>
-                                <p class="text-gray-400 text-sm mt-1">Comece adicionando sua primeira manutenção</p>
+                                <svg class="w-16 h-16 text-gray-300 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 0a2 2 0 104 0m0 0a2 2 0 11-4 0"/></path></svg>
+                                <p class="text-gray-500 dark:text-gray-400 text-lg font-medium">Nenhuma Manutenção registrada</p>
+                                <p class="text-gray-400 dark:text-gray-500 text-sm mt-1">Comece adicionando sua primeira manutenção</p>
                             </div>
                         </td>
                     </tr>
