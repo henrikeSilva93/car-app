@@ -19,4 +19,16 @@ Route::prefix('graph')->group(function () {
 
         return $statisticService->maintenanceGraph($carId);
     })->name('graph.maintenance');
+
+    Route::get('/fuelling/{carId}', function (int $carId) {
+        $statisticService = new StatisticService();
+
+        return $statisticService->fuellingGraph($carId);
+    })->name('graph.fuelling');
+
+    Route::get('/maintenance-total-last-12-months/{carId}', function (int $carId) {
+        $statisticService = new StatisticService();
+
+        return $statisticService->totalCostLast12MonthsGraph($carId);
+    })->name('graph.maintenance.total-last-12-months');
 });

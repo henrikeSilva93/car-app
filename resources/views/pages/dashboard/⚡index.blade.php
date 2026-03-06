@@ -75,6 +75,9 @@ new class extends Component
         $this->statistics['total_spent'] = $this->statistics['total_maintenance_spent'] + $this->statistics['total_fuel_spent'];
 
         $this->dispatch('stat-updated', $this->statistics);
+        $this->dispatch('maintenance-chart-refresh', carId: (int) $this->select_car);
+        $this->dispatch('fuelling-chart-refresh', carId: (int) $this->select_car);
+        $this->dispatch('total-cost-chart-refresh', carId: (int) $this->select_car);
     }
 };
 ?>
@@ -154,6 +157,10 @@ new class extends Component
     />
   </div>
 
+  <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+      <x-maintenance-chart :car-id="$select_car" />
+      <x-maintenance-total-year-chart :car-id="$select_car" />
+      <x-fuelling-chart :car-id="$select_car" />
+  </div>
+
 </div>
-
-
