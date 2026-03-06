@@ -49,9 +49,14 @@ new class extends Component
 
     public function editMaintenance($id)
     {
-        $this->modal_action = 'edit';
-        $maintenance = Maintenance::find($id);
+        $maintenance = Maintenance::where('id', $id)
+            ->whereHas('car', function($query) {
+                $query->where('user_id', auth()->id());
+            })
+            ->first();
+            
         if ($maintenance) {
+            $this->modal_action = 'edit';
             $this->maintenance = [
                 'id' => $id,
                 'selected_car' => $maintenance->car_id,
@@ -65,7 +70,12 @@ new class extends Component
 
     public function updateMaintenance()
     {
-        $maintenance = Maintenance::find($this->maintenance['id']);
+        $maintenance = Maintenance::where('id', $this->maintenance['id'])
+            ->whereHas('car', function($query) {
+                $query->where('user_id', auth()->id());
+            })
+            ->first();
+            
         if ($maintenance) {
             $maintenance->update([
                 'car_id' => $this->maintenance['selected_car'],
@@ -87,7 +97,12 @@ new class extends Component
 
     public function deleteMaintenance()
     {
-        $maintenance = Maintenance::find($this->maintenance['id']);
+        $maintenance = Maintenance::where('id', $this->maintenance['id'])
+            ->whereHas('car', function($query) {
+                $query->where('user_id', auth()->id());
+            })
+            ->first();
+            
         if ($maintenance) {
             $maintenance->delete();
             Flux::modal('confirm-delete')->close();

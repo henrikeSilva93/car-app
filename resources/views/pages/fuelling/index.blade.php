@@ -42,7 +42,7 @@ new class extends Component
 
         $fuelling = Fuelling::create([
             'car_id' => $this->fuelling['selected_car'],
-            'user_id' => 1,
+            'user_id' => auth()->id(),
             'liters' => $this->fuelling['liters'],
             'cost' => $this->fuelling['cost'],
             'station' => $this->fuelling['station'],
@@ -52,6 +52,7 @@ new class extends Component
         // Atualiza a quilometragem do veículo
             Mileage::create([
                 'car_id' => $this->fuelling['selected_car'],
+                'fuelling_id' => $fuelling->id,
                 'mileage' => $this->fuelling['mileage'],
             ]);
 
@@ -64,7 +65,11 @@ new class extends Component
     public function editFuelling($id)
     {
         $this->modal_action = 'edit';
-        $f = Fuelling::find($id);
+        $f = Fuelling::where('id', $id)
+            ->whereHas('car', function($query) {
+                $query->where('user_id', auth()->id());
+            })->first();
+        
         if ($f) {
             $car = Car::find($f->car_id);
             $this->fuelling = [
@@ -74,7 +79,7 @@ new class extends Component
                 'cost' => $f->cost,
                 'station' => $f->station,
                 'date' => $f->date,
-                'mileage' => $car ? $car->mileage : '',
+                'mileage' => Mileage::where('car_id', $f->car_id)->where('fuelling_id', $f->id)->first()?->mileage ?? '',
             ];
             Flux::modal('add-fuelling')->show();
         }
@@ -82,7 +87,11 @@ new class extends Component
 
     public function updateFuelling()
     {
-        $f = Fuelling::find($this->fuelling['id']);
+        $f = Fuelling::where('id', $this->fuelling['id'])
+            ->whereHas('car', function($query) {
+                $query->where('user_id', auth()->id());
+            })->first();
+        
         if ($f) {
             $f->update([
                 'car_id' => $this->fuelling['selected_car'],
@@ -92,11 +101,14 @@ new class extends Component
                 'date' => $this->fuelling['date'],
             ]);
             // Atualiza a quilometragem do veículo
-            $car = Car::find($this->fuelling['selected_car']);
-            if ($car && $this->fuelling['mileage']) {
-                $car->mileage = $this->fuelling['mileage'];
-                $car->save();
-            }
+           Mileage::updateOrCreate(
+                ['fuelling_id' => $f->id],
+                [
+                    'car_id' => $this->fuelling['selected_car'],
+                    'mileage' => $this->fuelling['mileage'],
+                ]
+            );
+
             Flux::modal('add-fuelling')->close();
             $this->resetForm();
             $this->getFuellings();
@@ -112,7 +124,11 @@ new class extends Component
 
     public function deleteFuelling()
     {
-        $f = Fuelling::find($this->fuelling['id']);
+        $f = Fuelling::where('id', $this->fuelling['id'])
+            ->whereHas('car', function($query) {
+                $query->where('user_id', auth()->id());
+            })->first();
+        
         if ($f) {
             $f->delete();
             Flux::modal('confirm-delete-fuelling')->close();

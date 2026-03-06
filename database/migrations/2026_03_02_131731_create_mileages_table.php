@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('mileages', function (Blueprint $table) {
             $table->id();
             $table->foreignId('car_id')->constrained()->onDelete('cascade');
+            $table->foreignId('fuelling_id')->constrained()->onDelete('cascade');
             $table->integer('mileage');
             $table->timestamps();
         });

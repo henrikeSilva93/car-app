@@ -41,7 +41,9 @@ new class extends Component
             return;
         }
 
-        $this->selectedCarDetails = Car::find($this->select_car);
+        $this->selectedCarDetails = Car::where('id', $this->select_car)
+            ->where('user_id', auth()->id())
+            ->first();
 
         if ($this->selectedCarDetails) {
             $latestMileage = \App\Models\Mileage::where('car_id', $this->select_car)

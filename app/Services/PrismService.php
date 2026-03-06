@@ -6,18 +6,19 @@ use Prism\Prism\Facades\Tool;
 use App\Models\Car;
 use App\Models\Maintenance;
 use App\Models\Fuelling;
+use App\Models\Mileage;
 
 class PrismService
 {
     public $model = 'minimax-m2.5:cloud';
     
-    public function generateResponse($prompt)
+    public function generateResponse($user_question)
     {   
 
         $context = [
         'usuario' => auth()->user()->name,
         'veículos' => Car::where('user_id', auth()->id())
-            ->select(['brand', 'model', 'year', 'mileage', 'id'])
+            ->select(['brand', 'model', 'year', 'id'])
             ->get()
             ->toArray(),
         'mensagens anteriores' => \App\Models\ChatbotMessageHistory::where('user_id', auth()->id())
@@ -51,7 +52,7 @@ class PrismService
             - Use markdown para destacar informações importantes.  
             - Seja sempre objetivo e claro.
 
-        Contexto disponível: " . json_encode($context);
+        Contexto disponível: " . json_encode($context)."dadas as regras acima, responda a seguinte pergunta: " . $user_question;
 
              
 
@@ -72,6 +73,13 @@ class PrismService
                         ->for('obtenha as manutenções do veículo')
                         ->withStringParameter('id_veiculo', 'o id do veículo para obter as manutenções relacionadas a ele')
                         ->using(function (int $id_veiculo) {
+                            $car = Car::where('id', $id_veiculo)
+                                ->where('user_id', auth()->id())
+                                ->first();
+                            
+                            if (!$car) {
+                                return "Erro: Veículo não encontrado ou não pertence ao usuário";
+                            }
             
                             $manutenções = Maintenance::where('car_id', $id_veiculo)->get()->toArray();
                               return "Aqui estão as manutenções registradas: " . json_encode($manutenções);
@@ -87,7 +95,14 @@ class PrismService
                         ->withStringParameter('descricao', 'a descrição da manutenção a ser criada')
                         ->withStringParameter('custo', 'o custo da manutenção a ser criada')
                         ->using(function (int $id_veiculo, string $descricao, float $custo) {
-                          
+                            $car = Car::where('id', $id_veiculo)
+                                ->where('user_id', auth()->id())
+                                ->first();
+                            
+                            if (!$car) {
+                                return "Erro: Veículo não encontrado ou não pertence ao usuário";
+                            }
+
                           try {
                                 $manutencao = Maintenance::create([
                                     'car_id' => $id_veiculo,
@@ -109,8 +124,21 @@ class PrismService
                         ->for('obtenha os abastecimentos do veículo')
                         ->withStringParameter('id_veiculo', 'o id do veículo para obter os abastecimentos relacionados a ele')
                         ->using(function (int $id_veiculo) {
+                            $car = Car::where('id', $id_veiculo)
+                                ->where('user_id', auth()->id())
+                                ->first();
+                            
+                            if (!$car) {
+                                return "Erro: Veículo não encontrado ou não pertence ao usuário";
+                            }
             
-                            $abastecimentos = Fuelling::where('car_id', $id_veiculo)->get()->toArray();
+                            $abastecimentos = Fuelling::join('mileages', 'fuellings.id', '=', 'mileages.fuelling_id')
+                                ->where('fuellings.car_id', $id_veiculo)
+                                ->select('fuellings.*', 'mileages.mileage')
+                                ->get()
+                                ->toArray();
+                          
+                          
                               return "Aqui estão os abastecimentos registrados: " . json_encode($abastecimentos);
                         })
                         ->withErrorHandling();
@@ -125,7 +153,14 @@ class PrismService
                         ->withStringParameter('custo', 'o custo do abastecimento')
                         ->withStringParameter('posto', 'o nome do posto onde foi realizado o abastecimento')
                         ->using(function (int $id_veiculo, float $litros, float $custo, string $posto) {
-                          
+                            $car = Car::where('id', $id_veiculo)
+                                ->where('user_id', auth()->id())
+                                ->first();
+                            
+                            if (!$car) {
+                                return "Erro: Veículo não encontrado ou não pertence ao usuário";
+                            }
+
                           try {
                                 $abastecimento = Fuelling::create([
                                     'car_id' => $id_veiculo,

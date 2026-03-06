@@ -48,9 +48,9 @@ new class extends Component
 
     function editCar($carId)
     {
-        $this->modal_action = "edit";
-        $db_car = Car::find($carId);
+        $db_car = Car::where('id', $carId)->where('user_id', auth()->id())->first();
         if ($db_car) {
+            $this->modal_action = "edit";
             $this->car = [ 
                 'id' => $db_car->id,
                 'brand' => $db_car->brand,
@@ -76,7 +76,7 @@ new class extends Component
         ]);
 
 
-        $db_car = Car::find($this->car['id']);
+        $db_car = Car::where('id', $this->car['id'])->where('user_id', auth()->id())->first();
         if ($db_car) {
             $db_car->update([
                 'brand' => $this->car['brand'],
@@ -103,11 +103,14 @@ new class extends Component
     function deleteCar()
     {
         if ($this->car_to_delete) {
-            Car::find($this->car_to_delete)->delete();
-            Flux::modal('confirm-delete')->close();
-            $this->car_to_delete = null;
-            $this->cars = $this->loadCars();
-            session()->flash('delete', 'Veículo deletado com sucesso!');
+            $db_car = Car::where('id', $this->car_to_delete)->where('user_id', auth()->id())->first();
+            if ($db_car) {
+                $db_car->delete();
+                Flux::modal('confirm-delete')->close();
+                $this->car_to_delete = null;
+                $this->cars = $this->loadCars();
+                session()->flash('delete', 'Veículo deletado com sucesso!');
+            }
         }
     }
 
