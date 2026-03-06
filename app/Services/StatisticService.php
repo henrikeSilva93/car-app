@@ -1,45 +1,52 @@
 <?php
+
+declare(strict_types=1);
+
 namespace App\Services;
+
 use App\Models\Car;
 use App\Models\Maintenance;
-use App\Models\Fuelling;
-use App\Models\Mileage;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
 
- class StatisticService
+class StatisticService
 {
-    public function MaitenanceGraph($car_id)
+    public function maintenanceGraph(int $carId): JsonResponse
     {
-      $car = Car::where('id', $car_id)
-        ->where('user_id', auth()->id())
-        ->first();
+        $car = Car::where('id', $carId)
+            ->where('user_id', auth()->id())
+            ->first();
 
-      if (!$car) {
-        return response()->json(['error' => 'Unauthorized'], 403);
-      }
+        if (!$car) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
 
-      $veicles_maitenances = Car::join('maintenances', 'cars.id', '=', 'maintenances.car_id')
-        ->where('cars.user_id', auth()->id())
-        ->select('cars.id', 'cars.brand', 'cars.model', 'maintenances.description as maintenance_description', 'maintenances.cost as maintenance_cost', 'maintenances.created_at as date')
-        ->get()
-        ->collect();
-     
-      $labels = $veicles_maitenances->map(fn($v) => $v->date)->toArray();
-    
-      $datasets = $veicles_maitenances->groupBy('cars.id')->map(function ($group) {
-        $car = $group->first();
-        return [
-          'label' => "{$car->brand} {$car->model}",
-          'data' => $group->pluck('maintenance_cost')->toArray(),
-        ];
-      })->values()->toArray();
+        $vehicleMaintenances = Car::join('maintenances', 'cars.id', '=', 'maintenances.car_id')
+            ->where('cars.user_id', auth()->id())
+            ->select(
+                'cars.id',
+                'cars.brand',
+                'cars.model',
+                'maintenances.description as maintenance_description',
+                'maintenances.cost as maintenance_cost',
+                'maintenances.created_at as date'
+            )
+            ->get()
+            ->collect();
 
-      return response()->json([
-        'labels' => $labels,
-        'datasets' => $datasets
-      ]);
-      
+        $labels = $vehicleMaintenances->map(fn ($v) => $v->date)->toArray();
+
+        $datasets = $vehicleMaintenances->groupBy('cars.id')->map(function ($group) {
+            $carData = $group->first();
+
+            return [
+                'label' => "{$carData->brand} {$carData->model}",
+                'data' => $group->pluck('maintenance_cost')->toArray(),
+            ];
+        })->values()->toArray();
+
+        return response()->json([
+            'labels' => $labels,
+            'datasets' => $datasets,
+        ]);
     }
-
-
 }

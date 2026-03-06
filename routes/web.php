@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Route;
 use App\Services\PrismService;
 use App\Services\StatisticService;
@@ -12,10 +14,9 @@ Route::livewire('/auth/login', 'pages::auth.login')->name('login');
 Route::livewire('/auth/register', 'pages::auth.register')->name('register');
 
 Route::prefix('graph')->group(function () {
-    Route::get('/maintenance/{car_id}', function(){
-        $statisticService = new \App\Services\StatisticService();
-        return $statisticService->MaitenanceGraph(request()->car_id);
+    Route::get('/maintenance/{carId}', function (int $carId) {
+        $statisticService = new StatisticService();
+
+        return $statisticService->maintenanceGraph($carId);
     })->name('graph.maintenance');
 });
-
-
