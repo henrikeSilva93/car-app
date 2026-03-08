@@ -158,9 +158,9 @@ new class extends Component
   </div>
 
   <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-      <x-maintenance-chart :car-id="$select_car" />
       <x-maintenance-total-year-chart :car-id="$select_car" />
       <x-fuelling-chart :car-id="$select_car" />
+      <x-maintenance-chart :car-id="$select_car" />
   </div>
 
 </div>
