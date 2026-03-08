@@ -1,141 +1,74 @@
-# Security Audit Checklist
+﻿# Security Checklist - Car App
 
-## Estado: EM ANDAMENTO
-**Data da auditoria:** 2026-03-06
-**Última atualização:** 2026-03-06 14:30:00
+## Status
 
----
-
-## 🔴 Crítico
-
-| # | Vulnerabilidade | Arquivo | Linha | Status |
-|---|----------------|---------|-------|--------|
-| 1 | User ID hardcoded (sempre 1) | resources/views/pages/fuelling/index.blade.php | 45 | [x] |
-| 2 | API Key exposta no repositório | .env | 68 | [ ] |
-| 3 | IDOR - Ferramentas do chatbot não verificam propriedade | app/Services/PrismService.php | 75-151 | [x] |
-| 4 | IDOR - API de gráficos retorna dados de todos os usuários | app/Services/StatisticService.php | 10-31 | [x] |
+- **Situação:** Em andamento
+- **Última revisão:** 2026-03-08
+- **Escopo:** Aplicação Laravel, componentes Livewire/Volt, services e pipeline CI
 
 ---
 
-## 🟠 Alto
+## Resumo executivo
 
-| # | Vulnerabilidade | Arquivo | Linha | Status |
-|---|----------------|---------|-------|--------|
-| 5 | APP_DEBUG=true expõe stack traces | .env | 4 | [x] |
-| 6 | SESSION_ENCRYPT=false | .env | 32 | [x] |
-| 7 | Broken Access Control - editCar/deleteCar sem verificação | resources/views/pages/car/⚡index.blade.php | 49-112 | [x] |
-| 8 | Broken Access Control - editMaintenance/deleteMaintenance | resources/views/pages/maintenance/⚡index.blade.php | 50-98 | [x] |
+- Vulnerabilidades críticas de **IDOR** previamente identificadas em serviços principais foram tratadas com validação por `user_id`.
+- Ainda existe pendência de higiene operacional: garantir segredos somente em ambiente seguro e não em arquivos locais compartilhados.
+- Recomendado manter revisão de segurança a cada release.
 
 ---
 
-## 🟡 Médio
+## Itens críticos
 
-| # | Vulnerabilidade | Arquivo | Linha | Status |
-|---|----------------|---------|-------|--------|
-| 9 | Falta verificação de propriedade no dashboard | resources/views/pages/dashboard/⚡index.blade.php | 32-55 | [x] |
-| 10 | editFuelling sem verificar se pertence ao usuário | resources/views/pages/fuelling/index.blade.php | 65-82 | [x] |
-
----
-
-## 🟢 Configurações (Verificar)
-
-| # | Item | Status |
-|---|------|--------|
-| 1 | Verificar se .env está no .gitignore | [x] |
-| 2 | Verificar se vendor/ está no .gitignore | [x] |
-| 3 | Verificar se node_modules/ está no .gitignore | [x] |
-| 4 | Verificar se storage/logs/ está no .gitignore | [x] |
+| # | Item | Arquivo(s) | Status | Ação recomendada |
+|---|---|---|---|---|
+| 1 | Segredos em `.env` local/compartilhado | `.env` | ⚠️ Pendente | Garantir uso de secret manager no deploy/CI |
+| 2 | Controle de acesso por ownership em serviços de IA | `app/Services/PrismService.php` | ✅ Resolvido | Manter testes cobrindo tentativa de acesso cruzado |
+| 3 | Controle de acesso em endpoints de estatística | `app/Services/StatisticService.php` | ✅ Resolvido | Validar em testes de regressão |
 
 ---
 
-## Detalhes das Correções
+## Itens altos
 
-### 1. User ID Hardcoded (CRÍTICO) - ✅ CORRIGIDO
-```php
-// ANTES (fuelling/index.blade.php:45)
-'user_id' => 1,
+| # | Item | Arquivo(s) | Status | Ação recomendada |
+|---|---|---|---|---|
+| 4 | `APP_DEBUG` em produção | `.env` / ambiente de deploy | ✅ Resolvido | Confirmar `APP_DEBUG=false` em produção |
+| 5 | Criptografia de sessão | `.env` | ✅ Resolvido | Confirmar `SESSION_ENCRYPT=true` |
+| 6 | Access control em operações CRUD | páginas Livewire/Volt | ✅ Resolvido | Padronizar validações em todas as novas actions |
 
-// DEPOIS
-'user_id' => auth()->id(),
-```
-Também foi adicionado verificação de propriedade em:
-- editFuelling()
-- updateFuelling()
-- deleteFuelling()
+---
 
-### 2. API Key Exposta (CRÍTICO)
-- Remover OPENROUTER_API_KEY do .env
-- Adicionar no servidor como variável de ambiente
-- Ou usar serviço de secrets
+## Itens médios
 
-### 3. IDOR no PrismService (CRÍTICO) - ✅ CORRIGIDO
-Adicionado verificação em todas as funções:
-```php
-// Verificar se o veículo pertence ao usuário autenticado
-$car = Car::where('id', $id_veiculo)
-    ->where('user_id', auth()->id())
-    ->first();
+| # | Item | Área | Status | Ação recomendada |
+|---|---|---|---|---|
+| 7 | Padronização de tratamento de exceções | Services | ⚠️ Parcial | Centralizar logs e mensagens de erro |
+| 8 | Cobertura de testes focada em segurança | `tests/Feature` | ⚠️ Parcial | Adicionar cenários negativos (403/ownership) |
+| 9 | Pipeline CI sem prompts interativos | `.github/workflows/ci.yml` | ⚠️ Parcial | Garantir `--no-interaction` em comandos críticos |
 
-if (!$car) {
-    return "Erro: Veículo não encontrado ou não pertence ao usuário";
-}
-```
-Verificações adicionadas em:
-- MaitenancesTool()
-- createMaitenanceTool()
-- ViewFuellingsTool()
-- CreateFuellingTool()
+---
 
-### 4. IDOR no StatisticService (CRÍTICO) - ✅ CORRIGIDO
-```php
-public function MaitenanceGraph($car_id)
-{
-    // Adicionar verificação
-    $car = Car::where('id', $car_id)
-        ->where('user_id', auth()->id())
-        ->first();
-        
-    if (!$car) {
-        return response()->json(['error' => 'Unauthorized'], 403);
-    }
-    // ...
-}
+## Hardening recomendado
+
+1. Definir política de rotação de segredos (trimestral).
+2. Revisar permissões de escrita em `storage/` e `bootstrap/cache/` no ambiente de produção.
+3. Implementar checklist de release com foco em:
+- segurança de configuração
+- validação de migrações
+- regressão de autorização
+
+---
+
+## Verificações rápidas (release)
+
+```bash
+php artisan test
+php artisan route:list
+php artisan config:clear
+php artisan optimize:clear
 ```
 
-### 5-8. Configurações (.env) - ✅ CORRIGIDO EM 2026-03-06 14:30:00
-```env
-APP_DEBUG=false
-SESSION_ENCRYPT=true
-```
+---
 
-### 7. Access Control em editCar/deleteCar - ✅ CORRIGIDO EM 2026-03-06 14:30:00
-Adicionado verificação de propriedade em todas as funções:
-```php
-// editCar
-$db_car = Car::where('id', $carId)->where('user_id', auth()->id())->first();
+## Histórico
 
-// updateCar
-$db_car = Car::where('id', $this->car['id'])->where('user_id', auth()->id())->first();
-
-// deleteCar
-$db_car = Car::where('id', $this->car_to_delete)->where('user_id', auth()->id())->first();
-```
-
-### 8. Access Control em editMaintenance/deleteMaintenance - ✅ CORRIGIDO EM 2026-03-06 14:30:00
-Adicionado verificação de propriedade usando whereHas:
-```php
-// editMaintenance, updateMaintenance, deleteMaintenance
-$maintenance = Maintenance::where('id', $id)
-    ->whereHas('car', function($query) {
-        $query->where('user_id', auth()->id());
-    })
-    ->first();
-```
-
-### 9. Verificação de propriedade no dashboard - ✅ CORRIGIDO EM 2026-03-06 14:30:00
-Adicionado verificação em loadCarData():
-```php
-$this->selectedCarDetails = Car::where('id', $this->select_car)
-    ->where('user_id', auth()->id())
-    ->first();
-```
+- **2026-03-06:** correções de ownership e hardening inicial.
+- **2026-03-08:** normalização de documentação/encoding e consolidação deste checklist.
