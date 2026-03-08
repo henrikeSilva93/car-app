@@ -85,8 +85,8 @@ jobs:
       - name: Generate key
         run: php artisan key:generate --no-interaction
 
-      - name: Publish Flux assets
-        run: php artisan flux:publish --force --no-interaction
+      # - name: Publish Flux assets
+      #   run: php artisan flux:publish --force --no-interaction
 
       - name: Build assets
         run: npm run build
