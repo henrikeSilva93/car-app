@@ -38,23 +38,22 @@ jobs:
 
       - name: Run tests
         run: php artisan test 
+  lint:
+    runs-on: ubuntu-latest
 
-  # lint:
-  #   runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-  #   steps:
-  #     - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
 
-  #     - name: Setup PHP
-  #       uses: shivammathur/setup-php@v2
-  #       with:
-  #         php-version: '8.2'
+      - name: Install dependencies
+        run: composer install --no-interaction
 
-  #     - name: Install dependencies
-  #       run: composer install --no-interaction
-
-  #     - name: Run Pint
-  #       run: ./vendor/bin/pint --test
+      - name: Run Pint
+        run: ./vendor/bin/pint --test
 
   build:
     runs-on: ubuntu-latest
