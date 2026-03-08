@@ -24,8 +24,8 @@ Aplicação web para gestão de veículos, manutenções, abastecimentos, quilom
 - Registro de abastecimentos com histórico de custos.
 - Histórico de quilometragem.
 - Dashboard com gráficos (30 dias e acumulado 12 meses).
-- Chatbot com ferramentas de domínio (Prism + Ollama).
-- Proteções de ownership para impedir acesso cruzado entre usuários.
+- Agente de IA completo (cadastra manutenção, abastecimentos via chatbot além de trazer métricas importante dos veículos)
+
 
 ---
 
@@ -70,6 +70,7 @@ car-app/
 ```mermaid
 flowchart LR
     U["Usuário"] --> V["Livewire / Volt UI"]
+    U["Autenticação"] --> V["Laravel Breeze"]
     V --> R["Rotas web"]
     R --> S["Services (StatisticService / PrismService)"]
     S --> M["Models Eloquent"]
