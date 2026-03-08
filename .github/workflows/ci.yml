@@ -22,22 +22,22 @@ jobs:
           extensions: mbstring, bcmath, pdo_sqlite
 
       - name: Install dependencies
-        run: composer install --no-progress --prefer-dist --optimize-autoloader
+        run: composer install --no-interaction --no-progress --prefer-dist --optimize-autoloader
 
       - name: Copy environment file
         run: cp .env.example .env
 
       - name: Generate key
-        run: php artisan key:generate
+        run: php artisan key:generate --no-interaction
 
       - name: Create SQLite database
         run: touch database/database.sqlite
 
       - name: Run migrations
-        run: php artisan migrate --force
+        run: php artisan migrate --force --no-interaction
 
       - name: Run tests
-        run: php artisan test
+        run: php artisan test --no-interaction
 
   lint:
     runs-on: ubuntu-latest
@@ -69,7 +69,7 @@ jobs:
           extensions: mbstring, bcmath, pdo_sqlite
 
       - name: Install PHP dependencies
-        run: composer install --no-progress --prefer-dist --optimize-autoloader
+        run: composer install --no-interaction --no-progress --prefer-dist --optimize-autoloader
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -83,10 +83,10 @@ jobs:
         run: cp .env.example .env
 
       - name: Generate key
-        run: php artisan key:generate
+        run: php artisan key:generate --no-interaction
 
       - name: Publish Flux assets
-        run: php artisan flux:publish --force
+        run: php artisan flux:publish --force --no-interaction
 
       - name: Build assets
         run: npm run build
