@@ -24,7 +24,7 @@ class StatisticServiceTest extends TestCase
         $this->actingAs($user);
 
         Maintenance::factory()->count(3)->create(['car_id' => $car->id]);
-        $service = new StatisticService();
+        $service = new StatisticService;
         $response = $service->maintenanceGraph($car->id);
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -48,7 +48,7 @@ class StatisticServiceTest extends TestCase
 
         Maintenance::factory()->count(2)->create(['car_id' => $car->id]);
 
-        $service = new StatisticService();
+        $service = new StatisticService;
         $response = $service->maintenanceGraph($car->id);
         $data = $response->getData(true);
 
@@ -78,7 +78,7 @@ class StatisticServiceTest extends TestCase
             'updated_at' => Carbon::now()->subDays(5),
         ]);
 
-        $service = new StatisticService();
+        $service = new StatisticService;
         $response = $service->maintenanceGraph($car->id);
         $data = $response->getData(true);
 
@@ -94,7 +94,7 @@ class StatisticServiceTest extends TestCase
         $car = Car::factory()->create(['user_id' => $otherUser->id]);
         $this->actingAs($user);
 
-        $service = new StatisticService();
+        $service = new StatisticService;
         $response = $service->maintenanceGraph($car->id);
         $data = $response->getData(true);
 
@@ -115,7 +115,7 @@ class StatisticServiceTest extends TestCase
             'date' => Carbon::now()->subDays(3)->toDateString(),
         ]);
 
-        $service = new StatisticService();
+        $service = new StatisticService;
         $response = $service->fuellingGraph($car->id);
         $data = $response->getData(true);
 
@@ -145,7 +145,7 @@ class StatisticServiceTest extends TestCase
             'date' => Carbon::now()->subDays(2)->toDateString(),
         ]);
 
-        $service = new StatisticService();
+        $service = new StatisticService;
         $response = $service->fuellingGraph($car->id);
         $data = $response->getData(true);
 
@@ -179,7 +179,7 @@ class StatisticServiceTest extends TestCase
             'updated_at' => Carbon::now()->subMonths(2),
         ]);
 
-        $service = new StatisticService();
+        $service = new StatisticService;
         $response = $service->totalCostLast12MonthsGraph($car->id);
         $data = $response->getData(true);
 
@@ -244,7 +244,7 @@ class StatisticServiceTest extends TestCase
             'date' => Carbon::now()->subMonths(14)->toDateString(),
         ]);
 
-        $service = new StatisticService();
+        $service = new StatisticService;
         $response = $service->totalCostLast12MonthsGraph($carA->id);
         $data = $response->getData(true);
 
@@ -259,7 +259,7 @@ class StatisticServiceTest extends TestCase
         $car = Car::factory()->create(['user_id' => $otherUser->id]);
         $this->actingAs($user);
 
-        $service = new StatisticService();
+        $service = new StatisticService;
         $response = $service->totalCostLast12MonthsGraph($car->id);
         $data = $response->getData(true);
 
@@ -282,7 +282,7 @@ class StatisticServiceTest extends TestCase
             'updated_at' => Carbon::now()->subMonths(1),
         ]);
 
-        $service = new StatisticService();
+        $service = new StatisticService;
         $response = $service->totalCostLast12MonthsGraph($car->id);
         $data = $response->getData(true);
 
