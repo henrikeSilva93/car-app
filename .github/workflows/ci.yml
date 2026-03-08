@@ -40,7 +40,7 @@ jobs:
         run: php artisan migrate --force --no-interaction
 
       - name: Run tests
-        run: php artisan test --no-interaction
+        run: php artisan test
   lint:
     runs-on: ubuntu-latest
 
