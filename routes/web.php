@@ -14,7 +14,7 @@ Route::livewire('/auth/login', 'pages::auth.login')->name('login');
 Route::livewire('/auth/register', 'pages::auth.register')->name('register');
 
 Route::prefix('graph')->group(function () {
-    Route::get('/maintenance/{carId}', function (int $carId) {
+    Route::get('/maintenance/{cadrId}', function (int $carId) {
         $statisticService = new StatisticService();
 
         return $statisticService->maintenanceGraph($carId);
