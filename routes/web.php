@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-use Illuminate\Support\Facades\Route;
-use App\Services\PrismService;
 use App\Services\StatisticService;
+use Illuminate\Support\Facades\Route;
 
 Route::livewire('/', 'pages::dashboard.index')->name('home')->middleware('auth');
 Route::livewire('/cars', 'pages::car.index')->name('cars')->middleware('auth');
@@ -15,19 +14,19 @@ Route::livewire('/auth/register', 'pages::auth.register')->name('register');
 
 Route::prefix('graph')->group(function () {
     Route::get('/maintenance/{cadrId}', function (int $carId) {
-        $statisticService = new StatisticService();
+        $statisticService = new StatisticService;
 
         return $statisticService->maintenanceGraph($carId);
     })->name('graph.maintenance');
 
     Route::get('/fuelling/{carId}', function (int $carId) {
-        $statisticService = new StatisticService();
+        $statisticService = new StatisticService;
 
         return $statisticService->fuellingGraph($carId);
     })->name('graph.fuelling');
 
     Route::get('/maintenance-total-last-12-months/{carId}', function (int $carId) {
-        $statisticService = new StatisticService();
+        $statisticService = new StatisticService;
 
         return $statisticService->totalCostLast12MonthsGraph($carId);
     })->name('graph.maintenance.total-last-12-months');

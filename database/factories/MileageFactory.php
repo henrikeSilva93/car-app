@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Models\Mileage;
 use App\Models\Car;
 use App\Models\Fuelling;
+use App\Models\Mileage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class MileageFactory extends Factory

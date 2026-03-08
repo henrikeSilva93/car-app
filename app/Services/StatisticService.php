@@ -18,7 +18,7 @@ class StatisticService
             ->where('user_id', auth()->id())
             ->first();
 
-        if (!$car) {
+        if (! $car) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -74,7 +74,7 @@ class StatisticService
             ->where('user_id', auth()->id())
             ->first();
 
-        if (!$car) {
+        if (! $car) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
@@ -133,7 +133,7 @@ class StatisticService
             ->where('user_id', auth()->id())
             ->first();
 
-        if (!$car) {
+        if (! $car) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 

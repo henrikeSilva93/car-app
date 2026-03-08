@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Fuelling;
 use App\Models\Car;
+use App\Models\Fuelling;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

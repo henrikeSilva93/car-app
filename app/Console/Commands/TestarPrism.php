@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Services\PrismService;
+use Illuminate\Console\Command;
 
 class TestarPrism extends Command
 {
@@ -26,11 +26,11 @@ class TestarPrism extends Command
      */
     public function handle()
     {
-        $service = new PrismService();
+        $service = new PrismService;
         $ask = $this->ask('Digite a descrição do veículo para obter uma resposta da IA:');
 
         $response = $service->generateResponse($ask);
 
-        $this->info("Resposta: " . $response);
+        $this->info('Resposta: '.$response);
     }
 }

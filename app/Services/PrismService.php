@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Log;
-use Prism\Prism\Facades\Prism;
-use Prism\Prism\Enums\Provider;
-use Prism\Prism\Facades\Tool;
 use App\Models\Car;
-use App\Models\Maintenance;
-use App\Models\Fuelling;
-use App\Models\Mileage;
 use App\Models\ChatbotMessageHistory;
+use App\Models\Fuelling;
+use App\Models\Maintenance;
+use Illuminate\Support\Facades\Log;
+use Prism\Prism\Enums\Provider;
+use Prism\Prism\Facades\Prism;
+use Prism\Prism\Facades\Tool;
 
 class PrismService
 {
@@ -58,7 +57,7 @@ class PrismService
             - Use markdown para destacar informacoes importantes.
             - Seja sempre objetivo e claro.
 
-        Contexto disponivel: " . json_encode($context) . "dadas as regras acima, responda a seguinte pergunta: " . $userQuestion;
+        Contexto disponivel: ".json_encode($context).'dadas as regras acima, responda a seguinte pergunta: '.$userQuestion;
 
         $response = Prism::text()
             ->using(Provider::Ollama, $this->model)
@@ -88,13 +87,13 @@ class PrismService
                     ->where('user_id', auth()->id())
                     ->first();
 
-                if (!$car) {
-                    return "Erro: Veiculo nao encontrado ou nao pertence ao usuario";
+                if (! $car) {
+                    return 'Erro: Veiculo nao encontrado ou nao pertence ao usuario';
                 }
 
                 $maintenances = Maintenance::where('car_id', $idVeiculo)->get()->toArray();
 
-                return "Aqui estao as manutencoes registradas: " . json_encode($maintenances);
+                return 'Aqui estao as manutencoes registradas: '.json_encode($maintenances);
             })
             ->withErrorHandling();
 
@@ -113,8 +112,8 @@ class PrismService
                     ->where('user_id', auth()->id())
                     ->first();
 
-                if (!$car) {
-                    return "Erro: Veiculo nao encontrado ou nao pertence ao usuario";
+                if (! $car) {
+                    return 'Erro: Veiculo nao encontrado ou nao pertence ao usuario';
                 }
 
                 try {
@@ -124,9 +123,9 @@ class PrismService
                         'cost' => $custo,
                     ]);
 
-                    return "Manutencao criada com sucesso: ";
+                    return 'Manutencao criada com sucesso: ';
                 } catch (\Exception $e) {
-                    return "Erro ao criar manutencao: " . $e->getMessage();
+                    return 'Erro ao criar manutencao: '.$e->getMessage();
                 }
             })
             ->withErrorHandling();
@@ -144,8 +143,8 @@ class PrismService
                     ->where('user_id', auth()->id())
                     ->first();
 
-                if (!$car) {
-                    return "Erro: Veiculo nao encontrado ou nao pertence ao usuario";
+                if (! $car) {
+                    return 'Erro: Veiculo nao encontrado ou nao pertence ao usuario';
                 }
 
                 $fuellings = Fuelling::join('mileages', 'fuellings.id', '=', 'mileages.fuelling_id')
@@ -154,7 +153,7 @@ class PrismService
                     ->get()
                     ->toArray();
 
-                return "Aqui estao os abastecimentos registrados: " . json_encode($fuellings);
+                return 'Aqui estao os abastecimentos registrados: '.json_encode($fuellings);
             })
             ->withErrorHandling();
 
@@ -174,8 +173,8 @@ class PrismService
                     ->where('user_id', auth()->id())
                     ->first();
 
-                if (!$car) {
-                    return "Erro: Veiculo nao encontrado ou nao pertence ao usuario";
+                if (! $car) {
+                    return 'Erro: Veiculo nao encontrado ou nao pertence ao usuario';
                 }
 
                 try {
@@ -187,9 +186,9 @@ class PrismService
                         'station' => $posto,
                     ]);
 
-                    return "Abastecimento registrado com sucesso: ";
+                    return 'Abastecimento registrado com sucesso: ';
                 } catch (\Exception $e) {
-                    return "Erro ao registrar abastecimento: " . $e->getMessage();
+                    return 'Erro ao registrar abastecimento: '.$e->getMessage();
                 }
             })
             ->withErrorHandling();
@@ -206,7 +205,7 @@ class PrismService
                 'sender' => 'bot',
             ]);
         } catch (\Exception $e) {
-            Log::error('Error saving chatbot message: ' . $e->getMessage());
+            Log::error('Error saving chatbot message: '.$e->getMessage());
         }
     }
 }
