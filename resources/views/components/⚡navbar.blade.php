@@ -66,8 +66,8 @@ new class extends Component
                         <button type="submit" wire:click="logout" class="text-sm text-red-600 dark:text-red-400 hover:underline">Sair</button>
                     
                 @else
-                    <a href="auth/login" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Entrar</a>
-                    <a href="auth/register" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Registrar</a>
+                    <a href="{{ route('login') }}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Entrar</a>
+                    <a href="{{ route('register') }}" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Registrar</a>
                 @endif
             </div>
         </div>
