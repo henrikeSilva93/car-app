@@ -29,7 +29,7 @@ COPY . .
 
 RUN php artisan key:generate --force
 
-RUN composer dump-autoload --optimize-autoloader --no-dev
+RUN composer dump-autoload --optimize --no-dev
 RUN php artisan package:discover --ansi
 
 RUN chmod -R 755 storage bootstrap/cache
