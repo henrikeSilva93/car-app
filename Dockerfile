@@ -1,6 +1,6 @@
 FROM php:8.2-fpm
 
-WORKDIR /var/www
+WORKDIR /var/www/html/car-app
 
 RUN apt-get update && apt-get install -y \
     git \
@@ -34,6 +34,6 @@ RUN php artisan package:discover --ansi
 
 RUN chmod -R 755 storage bootstrap/cache
 
-EXPOSE 8000
+EXPOSE 80
 
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=80"]

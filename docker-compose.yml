@@ -8,8 +8,9 @@ services:
     ports:
       - "80:8000"
     volumes:
-      - .:/var/www
-      - ./storage:/var/www/storage
+      - .:/var/www/html/car-app
+      - /var/www/html/car-app/vendor
+      - ./storage:/var/www/html/car-app/storage
     environment:
       - APP_ENV=local
       - APP_DEBUG=true
