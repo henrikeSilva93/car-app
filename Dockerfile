@@ -23,11 +23,14 @@ COPY package*.json ./
 RUN npm install
 
 COPY composer.json ./
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 COPY . .
 
 RUN php artisan key:generate --force
+
+RUN composer dump-autoload --optimize-autoloader --no-dev
+RUN php artisan package:discover --ansi
 
 RUN chmod -R 755 storage bootstrap/cache
 
