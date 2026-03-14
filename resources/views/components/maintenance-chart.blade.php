@@ -7,7 +7,7 @@
     wire:ignore
     x-data="maintenanceChart({
         carId: @js($carId),
-        endpointTemplate: @js(route('graph.maintenance', ['carId' => '__CAR_ID__'])),
+        endpointTemplate: @js(route('graph.maintenance', ['cadrId' => '__CAR_ID__'])),
     })"
     x-init="init()"
     x-on:maintenance-chart-refresh.window="refresh($event.detail)"
