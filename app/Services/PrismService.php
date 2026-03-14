@@ -15,7 +15,7 @@ use Prism\Prism\Facades\Tool;
 
 class PrismService
 {
-    public string $model = 'minimax-m2.5:cloud';
+    public string $model = 'openrouter/free';
 
     public function generateResponse(string $userQuestion): string
     {
@@ -60,7 +60,7 @@ class PrismService
         Contexto disponivel: ".json_encode($context).'dadas as regras acima, responda a seguinte pergunta: '.$userQuestion;
 
         $response = Prism::text()
-            ->using(Provider::Ollama, $this->model)
+            ->using(Provider::OpenRouter, $this->model)
             ->withPrompt($prompt)
             ->withClientOptions(['timeout' => 200])
             ->withTools([
