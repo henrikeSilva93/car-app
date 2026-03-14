@@ -32,6 +32,12 @@ RUN php artisan key:generate --force
 RUN composer dump-autoload --optimize --no-dev
 RUN php artisan package:discover --ansi
 
+RUN apt-get update && apt-get install -y \
+    unixodbc-dev \
+    && pecl install sqlsrv pdo_sqlsrv \
+    && docker-php-ext-enable sqlsrv pdo_sqlsrv
+
+
 RUN chmod -R 755 storage bootstrap/cache
 
 EXPOSE 80
